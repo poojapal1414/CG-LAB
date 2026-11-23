@@ -1,0 +1,124 @@
+#include <GL/glut.h>
+#include <cmath>
+
+float angle = 0.0f;
+
+void drawCube()
+{
+    glBegin(GL_QUADS);
+
+    // Front face - Red
+    glColor3f(1, 0, 0);
+    glVertex3f(-1, -1,  1);
+    glVertex3f( 1, -1,  1);
+    glVertex3f( 1,  1,  1);
+    glVertex3f(-1,  1,  1);
+
+    // Back face - Green
+    glColor3f(0, 1, 0);
+    glVertex3f(-1, -1, -1);
+    glVertex3f(-1,  1, -1);
+    glVertex3f( 1,  1, -1);
+    glVertex3f( 1, -1, -1);
+
+    // Top face - Blue
+    glColor3f(0, 0, 1);
+    glVertex3f(-1, 1, -1);
+    glVertex3f(-1, 1,  1);
+    glVertex3f( 1, 1,  1);
+    glVertex3f( 1, 1, -1);
+
+    // Bottom face - Yellow
+    glColor3f(1, 1, 0);
+    glVertex3f(-1, -1, -1);
+    glVertex3f( 1, -1, -1);
+    glVertex3f( 1, -1,  1);
+    glVertex3f(-1, -1,  1);
+
+    // Right face - Cyan
+    glColor3f(0, 1, 1);
+    glVertex3f(1, -1, -1);
+    glVertex3f(1,  1, -1);
+    glVertex3f(1,  1,  1);
+    glVertex3f(1, -1,  1);
+
+    // Left face - Magenta
+    glColor3f(1, 0, 1);
+    glVertex3f(-1, -1, -1);
+    glVertex3f(-1, -1,  1);
+    glVertex3f(-1,  1,  1);
+    glVertex3f(-1,  1, -1);
+
+    glEnd();
+}
+
+void display()
+{
+    glClear(GL_COLOR_BUFFER_BIT |
+            GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Translation transformation
+    glTranslatef(0.0f, 0.0f, -6.0f);
+
+    // Rotation transformation
+    glRotatef(angle, 1.0f, 1.0f, 0.0f);
+
+    // Scaling transformation
+    glScalef(0.8f, 0.8f, 0.8f);
+
+    drawCube();
+
+    glutSwapBuffers();
+}
+
+void update(int value)
+{
+    angle += 1.0f;
+
+    if(angle >= 360)
+        angle = 0;
+
+    glutPostRedisplay();
+
+    glutTimerFunc(16, update, 0);
+}
+
+void init()
+{
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+
+    glEnable(GL_DEPTH_TEST);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    gluPerspective(45.0, 1.0, 1.0, 100.0);
+
+    glMatrixMode(GL_MODELVIEW);
+}
+
+int main(int argc, char** argv)
+{
+    glutInit(&argc, argv);
+
+    glutInitDisplayMode(
+        GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH
+    );
+
+    glutInitWindowSize(800, 600);
+
+    glutCreateWindow("3D Rotating Cube");
+
+    init();
+
+    glutDisplayFunc(display);
+
+    glutTimerFunc(16, update, 0);
+
+    glutMainLoop();
+
+    return 0;
+}
